@@ -96,9 +96,9 @@ services:
       - KC_HOSTNAME_URL=https://keycloak.phungvip.io.vn
       - KC_HOSTNAME_ADMIN_URL=https://keycloak.phungvip.io.vn
       - KC_FRONTEND_URL=https://keycloak.phungvip.io.vn
-      - KC_HOSTNAME_STRICT=true   
-      - KC_HOSTNAME_STRICT_HTTPS=true   
-      - KC_HTTP_ENABLED=true    
+      - KC_HOSTNAME_STRICT=true
+      - KC_HOSTNAME_STRICT_HTTPS=true
+      - KC_HTTP_ENABLED=true
     # remove the "127.0.0.1:" prefix
     ports:
       - 9080:9080
@@ -114,8 +114,8 @@ services:
       org.springframework.boot.ignore: true
     depends_on:
       mysql-keycloak:
-        condition: service_healthy  # Wait for MySQL to be healthy
-  
+        condition: service_healthy # Wait for MySQL to be healthy
+
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
     container_name: kafdrop
@@ -150,18 +150,18 @@ services:
     container_name: nginx-proxy
     restart: unless-stopped
     depends_on:
-      - apigateway
-      - keycloak
-      - consul
-      - kafdrop
+      keycloak:
+        condition: service_healthy
     ports:
       - "80:80"
       - "443:443"
+    entrypoint: ["/bin/sh", "-c", "apt-get update && apt-get install -y curl && chmod +x /usr/local/bin/wait-for-apigateway.sh && /usr/local/bin/wait-for-apigateway.sh & nginx -g 'daemon off;'"]
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/letsencrypt:/etc/letsencrypt
       - ./nginx/www:/var/www/html
       - ./nginx/log:/var/log/nginx
+      - ./script/wait-for-apigateway.sh:/usr/local/bin/wait-for-apigateway.sh
 
   apigateway:
     image: shegga/apigateway
@@ -181,10 +181,12 @@ services:
       - "8080:8080"
     depends_on:
       mysql-apigateway:
-        condition: service_healthy  # Wait for MySQL to be healthy
+        condition: service_healthy # Wait for MySQL to be healthy
       keycloak:
-        condition: service_healthy  # Wait for MySQL to be healthy
-  
+        condition: service_healthy # Wait for MySQL to be healthy
+      nginx:
+        condition: service_started # Wait for MySQL to be healthy
+
   msmedia:
     image: tuongtran1345/msmedia
     environment:
@@ -200,13 +202,15 @@ services:
       - JHIPSTER_SECURITY_OAUTH2_AUTH_SERVER_URL=https://keycloak.phungvip.io.vn
     ports:
       - 8081:8081
-    # entrypoint: ["/bin/sh", "/start.sh"]
+    # entrypoint: ["/bin/sh", "script/start.sh"]
     # volumes:
-    #   - ./start.sh:/start.sh
+    #   - ./script/start.sh:/start.sh
     depends_on:
       mysql-msmedia:
         condition: service_healthy
       keycloak:
         condition: service_healthy
       consul:
+        condition: service_started
+      nginx:
         condition: service_started
