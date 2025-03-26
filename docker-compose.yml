@@ -1,11 +1,13 @@
 name: dev
+networks:
+  f4_network:
+    driver: bridge
+
 services:
   mysql-keycloak:
     extends:
       file: ./docker/mysql.yml
       service: mysql
-    ports:
-      - "3306:3306"
     volumes:
       - ./src/data/mysql-keycloak:/var/lib/mysql # Mounts host's `src/data` to MySQL's data directory
     environment:
@@ -15,13 +17,12 @@ services:
       interval: 5s
       timeout: 10s
       retries: 10
-
+    networks:
+      - f4_network
   mysql-apigateway:
     extends:
       file: ./docker/mysql.yml
       service: mysql
-    ports:
-      - "3307:3306"
     volumes:
       - ./src/data/mysql-apigateway:/var/lib/mysql # Mounts host's `src/data` to MySQL's data directory
     environment:
@@ -31,13 +32,12 @@ services:
       interval: 5s
       timeout: 10s
       retries: 10
-
+    networks:
+      - f4_network
   mysql-msmedia:
     extends:
       file: ./docker/mysql.yml
       service: mysql
-    ports:
-      - "3308:3306"
     volumes:
       - ./src/data/mysql-msmedia:/var/lib/mysql # Mounts host's `src/data` to MySQL's data directory
     environment:
@@ -47,12 +47,12 @@ services:
       interval: 5s
       timeout: 10s
       retries: 10
-
+    networks:
+      - f4_network
   redis:
     image: redis:7.4.2 # Same version as prod
-    ports:
-      - "6379:6379"
-
+    networks:
+      - f4_network
   consul:
     image: bitnami/consul:1.20.2 # Ensure compatibility with prod
     container_name: consul
@@ -63,10 +63,8 @@ services:
     #   - CONSUL_ALLOW_PRIVILEGED_PORTS=true
     restart: unless-stopped
     command: consul agent -dev -ui -client 0.0.0.0 -log-level=INFO
-    ports:
-      - "8500:8500"
-      - "8600:8600/udp" # DNS resolution for service discovery
-
+    networks:
+      - f4_network
   keycloak:
     image: quay.io/keycloak/keycloak:26.1.1
     command:
@@ -100,9 +98,6 @@ services:
       - KC_HOSTNAME_STRICT_HTTPS=true
       - KC_HTTP_ENABLED=true
     # remove the "127.0.0.1:" prefix
-    ports:
-      - 9080:9080
-      - 9443:9443
     healthcheck:
       test: 'bash /opt/keycloak/health-check.sh'
       interval: 5s
@@ -115,7 +110,8 @@ services:
     depends_on:
       mysql-keycloak:
         condition: service_healthy # Wait for MySQL to be healthy
-
+    networks:
+      - f4_network
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
     container_name: kafdrop
@@ -124,15 +120,12 @@ services:
       - kafka
     environment:
       KAFKA_BROKERCONNECT: kafka:29092
-    ports:
-      - "9000:9000"
-
+    networks:
+      - f4_network
   kafka:
     image: apache/kafka-native:3.9.0
     # If you want to expose these ports outside your dev PC,
     # remove the "127.0.0.1:" prefix
-    ports:
-      - 9092:9092
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
@@ -144,7 +137,8 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
     labels:
       org.springframework.boot.ignore: true
-
+    networks:
+      - f4_network
   nginx:
     image: nginx:latest
     container_name: nginx-proxy
@@ -162,7 +156,8 @@ services:
       - ./nginx/www:/var/www/html
       - ./nginx/log:/var/log/nginx
       - ./script/wait-for-apigateway.sh:/usr/local/bin/wait-for-apigateway.sh
-
+    networks:
+      - f4_network
   apigateway:
     image: shegga/apigateway
     environment:
@@ -177,8 +172,6 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_ISSUER_URI=https://keycloak.phungvip.io.vn/realms/jhipster
       - JHIPSTER_SECURITY_OAUTH2_AUTH_SERVER_URL=https://keycloak.phungvip.io.vn
-    ports:
-      - "8080:8080"
     depends_on:
       mysql-apigateway:
         condition: service_healthy # Wait for MySQL to be healthy
@@ -186,7 +179,8 @@ services:
         condition: service_healthy # Wait for MySQL to be healthy
       nginx:
         condition: service_started # Wait for MySQL to be healthy
-
+    networks:
+      - f4_network
   msmedia:
     image: tuongtran1345/msmedia
     environment:
@@ -200,11 +194,6 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_ISSUER_URI=https://keycloak.phungvip.io.vn/realms/jhipster
       - JHIPSTER_SECURITY_OAUTH2_AUTH_SERVER_URL=https://keycloak.phungvip.io.vn
-    ports:
-      - 8081:8081
-    # entrypoint: ["/bin/sh", "script/start.sh"]
-    # volumes:
-    #   - ./script/start.sh:/start.sh
     depends_on:
       mysql-msmedia:
         condition: service_healthy
@@ -214,3 +203,5 @@ services:
         condition: service_started
       nginx:
         condition: service_started
+    networks:
+      - f4_network

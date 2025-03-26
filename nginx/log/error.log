@@ -1227,3 +1227,138 @@
 2025/03/26 14:23:53 [notice] 8#8: signal 29 (SIGIO) received
 2025/03/26 14:25:13 [warn] 145#145: *12 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/1/00/0000000001 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly.min.css HTTP/1.1", upstream: "http://172.18.0.9:9080/resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly.min.css", host: "keycloak.phungvip.io.vn"
 2025/03/26 14:25:13 [warn] 143#143: *11 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/2/00/0000000002 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly-addons.css HTTP/1.1", upstream: "http://172.18.0.9:9080/resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly-addons.css", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:25:50 [warn] 145#145: *12 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/3/00/0000000003 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/admin/keycloak.v2/assets/main-WdJKhXYS.css HTTP/1.1", upstream: "http://172.18.0.9:9080/resources/v2zxs/admin/keycloak.v2/assets/main-WdJKhXYS.css", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:25:50 [warn] 144#144: *17 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/4/00/0000000004 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/admin/keycloak.v2/assets/main-oXeeBmgR.js HTTP/1.1", upstream: "http://172.18.0.9:9080/resources/v2zxs/admin/keycloak.v2/assets/main-oXeeBmgR.js", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:25:55 [warn] 144#144: *16 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/5/00/0000000005 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/common/keycloak/vendor/react-dom/react-dom.production.min.js HTTP/1.1", upstream: "http://172.18.0.9:9080/resources/v2zxs/common/keycloak/vendor/react-dom/react-dom.production.min.js", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:26:02 [warn] 145#145: *12 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/6/00/0000000006 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/admin/keycloak.v2/assets/main-WdJKhXYS.css HTTP/1.1", upstream: "http://172.18.0.9:9080/resources/v2zxs/admin/keycloak.v2/assets/main-WdJKhXYS.css", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:26:02 [warn] 143#143: *11 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/7/00/0000000007 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/admin/keycloak.v2/assets/main-oXeeBmgR.js HTTP/1.1", upstream: "http://172.18.0.9:9080/resources/v2zxs/admin/keycloak.v2/assets/main-oXeeBmgR.js", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:26:17 [warn] 143#143: *11 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/8/00/0000000008 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/admin/keycloak.v2/assets/index-8KUWBAsm.js HTTP/1.1", upstream: "http://172.18.0.9:9080/resources/v2zxs/admin/keycloak.v2/assets/index-8KUWBAsm.js", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:26:18 [warn] 144#144: *66 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/9/00/0000000009 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/jhipster/admin/en HTTP/1.1", upstream: "http://172.18.0.9:9080/resources/jhipster/admin/en", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:27:17 [warn] 143#143: *11 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/0/01/0000000010 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly.min.css HTTP/1.1", upstream: "http://172.18.0.9:9080/resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly.min.css", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:27:38 [warn] 143#143: *11 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/1/01/0000000011 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly.min.css HTTP/1.1", upstream: "http://172.18.0.9:9080/resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly.min.css", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:39:06 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:39:06 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:39:07 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:39:08 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:39:09 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:39:11 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:39:14 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:39:21 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:39:34 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:40:00 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:40:52 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:41:52 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:42:42 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:42:42 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:42:43 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:42:44 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:42:45 [emerg] 9#9: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:42:47 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:42:51 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:42:58 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:43:11 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:43:43 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:43:44 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:43:44 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:43:45 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:43:46 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:43:48 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:43:52 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:43:58 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:44:12 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:44:38 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:45:54 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:45:54 [emerg] 9#9: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:45:55 [notice] 7#7: using the "epoll" event method
+2025/03/26 14:45:55 [notice] 7#7: nginx/1.27.4
+2025/03/26 14:45:55 [notice] 7#7: built by gcc 12.2.0 (Debian 12.2.0-14) 
+2025/03/26 14:45:55 [notice] 7#7: OS: Linux 6.11.0-9-generic
+2025/03/26 14:45:55 [notice] 7#7: getrlimit(RLIMIT_NOFILE): 1073741816:1073741816
+2025/03/26 14:45:55 [notice] 7#7: start worker processes
+2025/03/26 14:45:55 [notice] 7#7: start worker process 11
+2025/03/26 14:45:55 [notice] 7#7: start worker process 12
+2025/03/26 14:45:55 [notice] 7#7: start worker process 13
+2025/03/26 14:45:55 [notice] 7#7: start worker process 14
+2025/03/26 14:46:36 [notice] 140#140: signal process started
+2025/03/26 14:46:36 [notice] 7#7: signal 1 (SIGHUP) received from 140, reconfiguring
+2025/03/26 14:46:36 [notice] 7#7: reconfiguring
+2025/03/26 14:46:36 [notice] 7#7: using the "epoll" event method
+2025/03/26 14:46:36 [notice] 7#7: start worker processes
+2025/03/26 14:46:36 [notice] 7#7: start worker process 141
+2025/03/26 14:46:36 [notice] 7#7: start worker process 142
+2025/03/26 14:46:36 [notice] 7#7: start worker process 143
+2025/03/26 14:46:36 [notice] 7#7: start worker process 144
+2025/03/26 14:46:36 [notice] 11#11: gracefully shutting down
+2025/03/26 14:46:36 [notice] 11#11: exiting
+2025/03/26 14:46:36 [notice] 12#12: gracefully shutting down
+2025/03/26 14:46:36 [notice] 12#12: exiting
+2025/03/26 14:46:36 [notice] 11#11: exit
+2025/03/26 14:46:36 [notice] 14#14: gracefully shutting down
+2025/03/26 14:46:36 [notice] 14#14: exiting
+2025/03/26 14:46:36 [notice] 12#12: exit
+2025/03/26 14:46:36 [notice] 14#14: exit
+2025/03/26 14:46:36 [notice] 13#13: gracefully shutting down
+2025/03/26 14:46:36 [notice] 13#13: exiting
+2025/03/26 14:46:36 [notice] 13#13: exit
+2025/03/26 14:46:36 [notice] 7#7: signal 17 (SIGCHLD) received from 11
+2025/03/26 14:46:36 [notice] 7#7: worker process 11 exited with code 0
+2025/03/26 14:46:36 [notice] 7#7: signal 29 (SIGIO) received
+2025/03/26 14:46:36 [notice] 7#7: signal 17 (SIGCHLD) received from 13
+2025/03/26 14:46:36 [notice] 7#7: worker process 13 exited with code 0
+2025/03/26 14:46:36 [notice] 7#7: signal 29 (SIGIO) received
+2025/03/26 14:46:36 [notice] 7#7: signal 17 (SIGCHLD) received from 14
+2025/03/26 14:46:36 [notice] 7#7: worker process 12 exited with code 0
+2025/03/26 14:46:36 [notice] 7#7: worker process 14 exited with code 0
+2025/03/26 14:46:36 [notice] 7#7: signal 29 (SIGIO) received
+2025/03/26 14:50:51 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:50:51 [emerg] 8#8: host not found in upstream "apigateway" in /etc/nginx/conf.d/apigateway.conf:9
+2025/03/26 14:50:52 [notice] 7#7: using the "epoll" event method
+2025/03/26 14:50:52 [notice] 7#7: nginx/1.27.4
+2025/03/26 14:50:52 [notice] 7#7: built by gcc 12.2.0 (Debian 12.2.0-14) 
+2025/03/26 14:50:52 [notice] 7#7: OS: Linux 6.11.0-9-generic
+2025/03/26 14:50:52 [notice] 7#7: getrlimit(RLIMIT_NOFILE): 1073741816:1073741816
+2025/03/26 14:50:52 [notice] 7#7: start worker processes
+2025/03/26 14:50:52 [notice] 7#7: start worker process 11
+2025/03/26 14:50:52 [notice] 7#7: start worker process 12
+2025/03/26 14:50:52 [notice] 7#7: start worker process 13
+2025/03/26 14:50:52 [notice] 7#7: start worker process 14
+2025/03/26 14:51:33 [notice] 140#140: signal process started
+2025/03/26 14:51:33 [notice] 7#7: signal 1 (SIGHUP) received from 140, reconfiguring
+2025/03/26 14:51:33 [notice] 7#7: reconfiguring
+2025/03/26 14:51:33 [notice] 7#7: using the "epoll" event method
+2025/03/26 14:51:33 [notice] 7#7: start worker processes
+2025/03/26 14:51:33 [notice] 7#7: start worker process 141
+2025/03/26 14:51:33 [notice] 7#7: start worker process 142
+2025/03/26 14:51:33 [notice] 7#7: start worker process 143
+2025/03/26 14:51:33 [notice] 7#7: start worker process 144
+2025/03/26 14:51:33 [notice] 11#11: gracefully shutting down
+2025/03/26 14:51:33 [notice] 11#11: exiting
+2025/03/26 14:51:33 [notice] 11#11: exit
+2025/03/26 14:51:33 [notice] 12#12: gracefully shutting down
+2025/03/26 14:51:33 [notice] 12#12: exiting
+2025/03/26 14:51:33 [notice] 12#12: exit
+2025/03/26 14:51:33 [notice] 14#14: gracefully shutting down
+2025/03/26 14:51:33 [notice] 14#14: exiting
+2025/03/26 14:51:33 [notice] 14#14: exit
+2025/03/26 14:51:33 [notice] 13#13: gracefully shutting down
+2025/03/26 14:51:33 [notice] 13#13: exiting
+2025/03/26 14:51:33 [notice] 13#13: exit
+2025/03/26 14:51:33 [notice] 7#7: signal 17 (SIGCHLD) received from 11
+2025/03/26 14:51:33 [notice] 7#7: worker process 11 exited with code 0
+2025/03/26 14:51:33 [notice] 7#7: signal 29 (SIGIO) received
+2025/03/26 14:51:33 [notice] 7#7: signal 17 (SIGCHLD) received from 14
+2025/03/26 14:51:33 [notice] 7#7: worker process 14 exited with code 0
+2025/03/26 14:51:33 [notice] 7#7: signal 29 (SIGIO) received
+2025/03/26 14:51:33 [notice] 7#7: signal 17 (SIGCHLD) received from 12
+2025/03/26 14:51:33 [notice] 7#7: worker process 12 exited with code 0
+2025/03/26 14:51:33 [notice] 7#7: signal 29 (SIGIO) received
+2025/03/26 14:51:33 [notice] 7#7: signal 17 (SIGCHLD) received from 13
+2025/03/26 14:51:33 [notice] 7#7: worker process 13 exited with code 0
+2025/03/26 14:51:33 [notice] 7#7: signal 29 (SIGIO) received
+2025/03/26 14:51:40 [warn] 141#141: *7 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/1/00/0000000001 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly-addons.css HTTP/1.1", upstream: "http://172.21.0.9:9080/resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly-addons.css", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:51:40 [warn] 144#144: *8 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/2/00/0000000002 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly.min.css HTTP/1.1", upstream: "http://172.21.0.9:9080/resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly.min.css", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:51:59 [warn] 142#142: *12 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/3/00/0000000003 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly-addons.css HTTP/1.1", upstream: "http://172.21.0.9:9080/resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly-addons.css", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:51:59 [warn] 141#141: *7 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/4/00/0000000004 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly.min.css HTTP/1.1", upstream: "http://172.21.0.9:9080/resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly.min.css", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:52:29 [warn] 142#142: *12 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/5/00/0000000005 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly.min.css HTTP/1.1", upstream: "http://172.21.0.9:9080/resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly.min.css", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:54:36 [warn] 144#144: *74 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/6/00/0000000006 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly-addons.css HTTP/1.1", upstream: "http://172.21.0.9:9080/resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly-addons.css", host: "keycloak.phungvip.io.vn"
+2025/03/26 14:54:36 [warn] 144#144: *73 an upstream response is buffered to a temporary file /var/cache/nginx/proxy_temp/7/00/0000000007 while reading upstream, client: 116.102.179.198, server: keycloak.phungvip.io.vn, request: "GET /resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly.min.css HTTP/1.1", upstream: "http://172.21.0.9:9080/resources/v2zxs/common/keycloak/vendor/patternfly-v5/patternfly.min.css", host: "keycloak.phungvip.io.vn"

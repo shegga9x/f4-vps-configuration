@@ -18,6 +18,5 @@ services:
       resources:
         limits:
           memory: 1g
-
 volumes:
   jenkins_home:
