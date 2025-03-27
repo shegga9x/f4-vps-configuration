@@ -1,12 +1,12 @@
-version: '3.8'
+name: jenkins
+networks:
+  f4_network:
+      external: true
 services:
   jenkins:
     image: jenkins/jenkins:lts-jdk17
     container_name: jenkins-lite
     user: "root"  # Run as Jenkins user to match folder permissions
-    ports:
-      - "9090:8080"
-      - "50000:50000"
     volumes:
       - ./jenkins_home:/var/jenkins_home
       - /root/docker-compose/docker-compose:/var/jenkins_home/project  # Corrected mount
@@ -18,5 +18,8 @@ services:
       resources:
         limits:
           memory: 1g
+    networks:
+      - f4_network
+
 volumes:
   jenkins_home:
