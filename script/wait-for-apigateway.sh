@@ -88,7 +88,16 @@ server {
     ssl_certificate /etc/letsencrypt/live/appf4.io.vn/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/appf4.io.vn/privkey.pem;
 
-    resolver 8.8.8.8 ipv6=off;  # Use Google DNS to resolve domain names
+    resolver 8.8.8.8 ipv6=off;
+
+    # Allow unauthenticated access to API endpoints
+    location ~* ^/v1/ {
+        proxy_pass http://consul:8500;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header Authorization \$http_authorization;
+    }
 
     location / {
         access_by_lua_block {
@@ -98,7 +107,7 @@ server {
                 client_id = "web_app",
                 client_secret = "",
                 scope = "openid email profile",
-                ssl_verify = "no"  -- Disable SSL verification if self-signed
+                ssl_verify = "no"
             }
             local res, err = require("resty.openidc").authenticate(opts)
             if err then 
@@ -112,9 +121,9 @@ server {
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header Authorization \$http_authorization;
     }
 }
-    # 🔹 Jenkins with Keycloak Authentication
 
 server {
     listen 443 ssl;
