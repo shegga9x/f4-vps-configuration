@@ -31,4 +31,14 @@ services:
       - SPRING_LIQUIBASE_URL=jdbc:mysql://appf4.io.vn:3306/apigateway?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true
       - JHIPSTER_CACHE_REDIS_SERVER=redis://appf4.io.vn:6379
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=appf4.io.vn:9092
+      - SPRING_KAFKA_SECURITY_PROTOCOL=SSL
+      - SPRING_KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=""
+      - SPRING_KAFKA_PROPERTIES_SSL_TRUSTSTORE_LOCATION=/app/config/kafka.truststore.jks
+      - SPRING_KAFKA_PROPERTIES_SSL_TRUSTSTORE_PASSWORD=f4security
+      - SPRING_KAFKA_PROPERTIES_SSL_KEYSTORE_LOCATION=/app/config/kafka.keystore.jks
+      - SPRING_KAFKA_PROPERTIES_SSL_KEYSTORE_PASSWORD=f4security
+      - SPRING_KAFKA_PROPERTIES_SSL_KEY_PASSWORD=f4security
+    volumes:
+      - ./kafka/ssl/kafka.truststore.jks:/app/config/kafka.truststore.jks
+      - ./kafka/ssl/kafka.keystore.jks:/app/config/kafka.keystore.jks
 

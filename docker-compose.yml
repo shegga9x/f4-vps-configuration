@@ -1,238 +1,255 @@
-  name: dev
-  networks:
-    f4_network:
-      driver: bridge
-  services:
-    mysql-keycloak:
-      extends:
-        file: ./docker/mysql.yml
-        service: mysql
-      volumes:
-        - ./src/data/mysql-keycloak:/var/lib/mysql # Mounts host's `src/data` to MySQL's data directory
-      environment:
-        MYSQL_DATABASE: keycloak
-      healthcheck:
-        test: [ "CMD-SHELL", "mysql -e 'SHOW DATABASES;' && sleep 5" ]
-        interval: 5s
-        timeout: 10s
-        retries: 10
-      networks:
-        - f4_network
-    mysql-apigateway:
-      extends:
-        file: ./docker/mysql.yml
-        service: mysql
-      volumes:
-        - ./src/data/mysql-apigateway:/var/lib/mysql # Mounts host's `src/data` to MySQL's data directory
-      ports:
-        - "3306:3306"
-      environment:
-        MYSQL_DATABASE: apigateway
-      healthcheck:
-        test: [ "CMD-SHELL", "mysql -e 'SHOW DATABASES;' && sleep 5" ]
-        interval: 5s
-        timeout: 10s
-        retries: 10
-      networks:
-        - f4_network
-    mysql-msmedia:
-      extends:
-        file: ./docker/mysql.yml
-        service: mysql
-      volumes:
-        - ./src/data/mysql-msmedia:/var/lib/mysql # Mounts host's `src/data` to MySQL's data directory
-      environment:
-        MYSQL_DATABASE: msmedia
-      healthcheck:
-        test: [ "CMD-SHELL", "mysql -e 'SHOW DATABASES;' && sleep 5" ]
-        interval: 5s
-        timeout: 10s
-        retries: 10
-      networks:
-        - f4_network
-    redis:
-      image: redis:7.4.2 # Same version as prod
-      ports:
-        - "6379:6379"
-      networks:
-        - f4_network
-    consul:
-      image: bitnami/consul:1.20.2 # Ensure compatibility with prod
-      container_name: consul
-      # network_mode: "host"  # Allows services outside Docker to register
-      # environment:
-        # - CONSUL_BIND_INTERFACE=0.0.0.0
-        # - CONSUL_CLIENT_INTERFACE=eth0
-        # - CONSUL_ALLOW_PRIVILEGED_PORTS=true
-      restart: unless-stopped
-      command: consul agent -dev -ui -client 0.0.0.0 -log-level=INFO
-      networks:
-        - f4_network
-    keycloak:
-      image: quay.io/keycloak/keycloak:26.1.1
-      command:
-        - "start-dev"
-        - "--import-realm"
-        - "--proxy=edge"
-        - "--hostname=https://keycloak.appf4.io.vn"
-        - "--hostname-admin=https://keycloak.appf4.io.vn"
-        - "--hostname-strict=true"
-      volumes:
-        - ./realm-config:/opt/keycloak/data/import
-        - ./realm-config/keycloak-health-check.sh:/opt/keycloak/health-check.sh
-      environment:
-        - KC_DB=mysql
-        - KC_DB_URL=jdbc:mysql://mysql-keycloak:3306/keycloak
-        - KC_DB_USERNAME=root
-        - KEYCLOAK_ADMIN=admin
-        - KEYCLOAK_ADMIN_PASSWORD=admin
-        - KC_FEATURES=scripts
-        - KC_HTTP_PORT=9080
-        - KC_HTTPS_PORT=9443
-        - KC_HEALTH_ENABLED=true
-        - KC_HTTP_MANAGEMENT_PORT=9990
-        - KC_PROXY=edge
-        - KC_HOSTNAME=keycloak.appf4.io.vn
-        - KC_HOSTNAME_PORT=443
-        - KC_HOSTNAME_URL=https://keycloak.appf4.io.vn
-        - KC_HOSTNAME_ADMIN_URL=https://keycloak.appf4.io.vn
-        - KC_FRONTEND_URL=https://keycloak.appf4.io.vn
-        - KC_HOSTNAME_STRICT=true
-        - KC_HOSTNAME_STRICT_HTTPS=true
-        - KC_HTTP_ENABLED=true
-      # remove the "127.0.0.1:" prefix
-      healthcheck:
-        test: 'bash /opt/keycloak/health-check.sh'
-        interval: 5s
-        timeout: 5s
-        # Increased retries due to slow Keycloak startup in GitHub Actions using MacOS
-        retries: 50
-        start_period: 10s
-      labels:
-        org.springframework.boot.ignore: true
-      depends_on:
-        mysql-keycloak:
-          condition: service_healthy # Wait for MySQL to be healthy
-      networks:
-        - f4_network
-    kafdrop:
-      image: obsidiandynamics/kafdrop:latest
-      container_name: kafdrop
-      restart: always
-      ports:
-        - "9000:9000"
-      depends_on:
-        - kafka
-      environment:
-        - KAFKA_BROKERCONNECT=kafka:29092
-      networks:
-        - f4_network
-    kafka:
-      image: apache/kafka-native:3.9.0
-      # If you want to expose these ports outside your dev PC,
-      # remove the "127.0.0.1:" prefix
-      ports:
-        - "9092:9092"
-      environment:
-        KAFKA_NODE_ID: 1
-        KAFKA_PROCESS_ROLES: broker,controller
-        KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://appf4.io.vn:9092,DOCKER://kafka:29092
-        KAFKA_LISTENERS: PLAINTEXT://:9092,DOCKER://:29092,CONTROLLER://localhost:9093
-        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,DOCKER:PLAINTEXT
-        KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-        KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
-        KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      labels:
-        org.springframework.boot.ignore: true
-      networks:
-        - f4_network
-    nginx:
-      build: ./script/
-      container_name: nginx
-      restart: unless-stopped
-      depends_on:
-        keycloak:
-          condition: service_healthy
-      ports:
-        - "80:80"
-        - "443:443"
-      entrypoint: [ "/bin/sh", "-c", "rm -f /etc/nginx/conf.d/apigateway.conf && apt-get update && apt-get install -y curl && chmod +x /usr/local/bin/wait-for-apigateway.sh && /usr/local/bin/wait-for-apigateway.sh & nginx -g 'daemon off;'" ]
-      volumes:
-        - ./nginx.conf:/etc/nginx/nginx.conf:ro
-        - ./nginx/conf.d:/etc/nginx/conf.d
-        - ./nginx/letsencrypt:/etc/letsencrypt
-        - ./nginx/www:/var/www/html
-        - ./nginx/log:/var/log/nginx
-        - ./lua/validate_token.lua:/etc/nginx/validate_token.lua  # Mount the Lua script
-        - ./lua:/etc/nginx/lua
-        - ./script/wait-for-apigateway.sh:/usr/local/bin/wait-for-apigateway.sh
-      command: >
-        /bin/sh -c "opm get zmartzone/lua-resty-openidc && nginx -g 'daemon off;'"
-      networks:
-        - f4_network
-    apigateway:
-      image: shegga/apigateway
-      environment:
-        - JHIPSTER_APP_NAME=ApiGatewayApp
-        - _JAVA_OPTIONS=-Xmx512m -Xms256m
-        - SPRING_PROFILES_ACTIVE=dev,api-docs
-        - SPRING_CLOUD_CONSUL_HOST=consul
-        - SPRING_CLOUD_CONSUL_PORT=8500
-        - SPRING_R2DBC_URL=r2dbc:mysql://mysql-apigateway:3306/apigateway
-        - SPRING_LIQUIBASE_URL=jdbc:mysql://mysql-apigateway:3306/apigateway?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true
-        - JHIPSTER_CACHE_REDIS_SERVER=redis://redis:6379
-        - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
-        - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_ISSUER_URI=https://keycloak.appf4.io.vn/realms/jhipster
-        - JHIPSTER_SECURITY_OAUTH2_AUTH_SERVER_URL=https://keycloak.appf4.io.vn
-      depends_on:
-        mysql-apigateway:
-          condition: service_healthy
-        keycloak:
-          condition: service_healthy
-        nginx:
-          condition: service_started
-      networks:
-        - f4_network
-    msmedia:
-      image: tuongtran1345/msmedia
-      environment:
-        - JHIPSTER_APP_NAME=MsMediaApp
-        - SPRING_PROFILES_ACTIVE=dev,api-docs
-        - SPRING_CLOUD_CONSUL_HOST=consul
-        - SPRING_CLOUD_CONSUL_PORT=8500
-        - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-msmedia:3306/msmedia?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true
-        - SPRING_LIQUIBASE_URL=jdbc:mysql://mysql-msmedia:3306/msmedia?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true
-        - JHIPSTER_CACHE_REDIS_SERVER=redis://redis:6379
-        - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
-        - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_ISSUER_URI=https://keycloak.appf4.io.vn/realms/jhipster
-        - JHIPSTER_SECURITY_OAUTH2_AUTH_SERVER_URL=https://keycloak.appf4.io.vn
-      depends_on:
-        mysql-msmedia:
-          condition: service_healthy
-        keycloak:
-          condition: service_healthy
-        consul:
-          condition: service_started
-        nginx:
-          condition: service_started
-      networks:
-        - f4_network
-    jenkins:
-      image: jenkins/jenkins:lts-jdk17
-      container_name: jenkins-lite
-      user: "root" # Run as Jenkins user to match folder permissions
-      volumes:
-        - ./jenkins_home:/var/jenkins_home
-        - /root/docker-compose/docker-compose:/var/jenkins_home/project # Corrected mount
-        - /var/run/docker.sock:/var/run/docker.sock # Allow Jenkins to control Docker
-        - /usr/bin/docker:/usr/bin/docker # Provides the Docker CLI
-      environment:
-        - JAVA_OPTS=-Xms512m -Xmx1024m
-      deploy:
-        resources:
-          limits:
-            memory: 1g
-      networks:
-        - f4_network
-  volumes:
-    jenkins_home:
+name: dev
+networks:
+  f4_network:
+    driver: bridge
+services:
+  mysql-keycloak:
+    extends:
+      file: ./docker/mysql.yml
+      service: mysql
+    volumes:
+      - ./src/data/mysql-keycloak:/var/lib/mysql # Mounts host's `src/data` to MySQL's data directory
+    environment:
+      MYSQL_DATABASE: keycloak
+    healthcheck:
+      test: [ "CMD-SHELL", "mysql -e 'SHOW DATABASES;' && sleep 5" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    networks:
+      - f4_network
+  mysql-apigateway:
+    extends:
+      file: ./docker/mysql.yml
+      service: mysql
+    volumes:
+      - ./src/data/mysql-apigateway:/var/lib/mysql # Mounts host's `src/data` to MySQL's data directory
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: apigateway
+    healthcheck:
+      test: [ "CMD-SHELL", "mysql -e 'SHOW DATABASES;' && sleep 5" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    networks:
+      - f4_network
+  mysql-msmedia:
+    extends:
+      file: ./docker/mysql.yml
+      service: mysql
+    volumes:
+      - ./src/data/mysql-msmedia:/var/lib/mysql # Mounts host's `src/data` to MySQL's data directory
+    environment:
+      MYSQL_DATABASE: msmedia
+    healthcheck:
+      test: [ "CMD-SHELL", "mysql -e 'SHOW DATABASES;' && sleep 5" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    networks:
+      - f4_network
+  redis:
+    image: redis:7.4.2 # Same version as prod
+    ports:
+      - "6379:6379"
+    networks:
+      - f4_network
+  consul:
+    image: bitnami/consul:1.20.2 # Ensure compatibility with prod
+    container_name: consul
+    # network_mode: "host"  # Allows services outside Docker to register
+    # environment:
+    # - CONSUL_BIND_INTERFACE=0.0.0.0
+    # - CONSUL_CLIENT_INTERFACE=eth0
+    # - CONSUL_ALLOW_PRIVILEGED_PORTS=true
+    restart: unless-stopped
+    command: consul agent -dev -ui -client 0.0.0.0 -log-level=INFO
+    networks:
+      - f4_network
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1.1
+    command:
+      - "start-dev"
+      - "--import-realm"
+      - "--proxy=edge"
+      - "--hostname=https://keycloak.appf4.io.vn"
+      - "--hostname-admin=https://keycloak.appf4.io.vn"
+      - "--hostname-strict=true"
+    volumes:
+      - ./realm-config:/opt/keycloak/data/import
+      - ./realm-config/keycloak-health-check.sh:/opt/keycloak/health-check.sh
+    environment:
+      - KC_DB=mysql
+      - KC_DB_URL=jdbc:mysql://mysql-keycloak:3306/keycloak
+      - KC_DB_USERNAME=root
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_FEATURES=scripts
+      - KC_HTTP_PORT=9080
+      - KC_HTTPS_PORT=9443
+      - KC_HEALTH_ENABLED=true
+      - KC_HTTP_MANAGEMENT_PORT=9990
+      - KC_PROXY=edge
+      - KC_HOSTNAME=keycloak.appf4.io.vn
+      - KC_HOSTNAME_PORT=443
+      - KC_HOSTNAME_URL=https://keycloak.appf4.io.vn
+      - KC_HOSTNAME_ADMIN_URL=https://keycloak.appf4.io.vn
+      - KC_FRONTEND_URL=https://keycloak.appf4.io.vn
+      - KC_HOSTNAME_STRICT=true
+      - KC_HOSTNAME_STRICT_HTTPS=true
+      - KC_HTTP_ENABLED=true
+    # remove the "127.0.0.1:" prefix
+    healthcheck:
+      test: 'bash /opt/keycloak/health-check.sh'
+      interval: 5s
+      timeout: 5s
+      # Increased retries due to slow Keycloak startup in GitHub Actions using MacOS
+      retries: 50
+      start_period: 10s
+    labels:
+      org.springframework.boot.ignore: true
+    depends_on:
+      mysql-keycloak:
+        condition: service_healthy # Wait for MySQL to be healthy
+    networks:
+      - f4_network
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - f4_network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: kafka
+    ports:
+      - "9092:9092" # SSL External
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER:PLAINTEXT,EXTERNAL:SSL
+      KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka:29092,EXTERNAL://appf4.io.vn:9092
+      KAFKA_LISTENERS: DOCKER://:29092,EXTERNAL://:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+      KAFKA_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka.keystore.jks
+      KAFKA_SSL_KEYSTORE_PASSWORD: f4security
+      KAFKA_SSL_KEY_PASSWORD: f4security
+      KAFKA_SSL_TRUSTSTORE_LOCATION: /etc/kafka/secrets/kafka.truststore.jks
+      KAFKA_SSL_TRUSTSTORE_PASSWORD: f4security
+      KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
+    volumes:
+      - ./kafka/ssl:/etc/kafka/secrets
+    depends_on:
+      - zookeeper
+    networks:
+      - f4_network
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    container_name: kafdrop
+    ports:
+      - "9000:9000" # Kafdrop UI on port 9000
+    environment:
+      KAFKA_BROKERCONNECT: kafka:29092
+      JVM_OPTS: "-Xms256M -Xmx512M"
+      SERVER_SERVLET_CONTEXTPATH: "/"
+    depends_on:
+      - kafka
+    networks:
+      - f4_network
+
+  nginx:
+    build: ./script/
+    container_name: nginx
+    restart: unless-stopped
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    entrypoint: [ "/bin/sh", "-c", "rm -f /etc/nginx/conf.d/apigateway.conf && apt-get update && apt-get install -y curl && chmod +x /usr/local/bin/wait-for-apigateway.sh && /usr/local/bin/wait-for-apigateway.sh & nginx -g 'daemon off;'" ]
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/letsencrypt:/etc/letsencrypt
+      - ./nginx/www:/var/www/html
+      - ./nginx/log:/var/log/nginx
+      - ./lua/validate_token.lua:/etc/nginx/validate_token.lua # Mount the Lua script
+      - ./lua:/etc/nginx/lua
+      - ./script/wait-for-apigateway.sh:/usr/local/bin/wait-for-apigateway.sh
+    command: >
+      /bin/sh -c "opm get zmartzone/lua-resty-openidc && nginx -g 'daemon off;'"
+    networks:
+      - f4_network
+  apigateway:
+    image: shegga/apigateway
+    environment:
+      - JHIPSTER_APP_NAME=ApiGatewayApp
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - SPRING_PROFILES_ACTIVE=dev,api-docs
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_CLOUD_CONSUL_PORT=8500
+      - SPRING_R2DBC_URL=r2dbc:mysql://mysql-apigateway:3306/apigateway
+      - SPRING_LIQUIBASE_URL=jdbc:mysql://mysql-apigateway:3306/apigateway?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true
+      - JHIPSTER_CACHE_REDIS_SERVER=redis://redis:6379
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_ISSUER_URI=https://keycloak.appf4.io.vn/realms/jhipster
+      - JHIPSTER_SECURITY_OAUTH2_AUTH_SERVER_URL=https://keycloak.appf4.io.vn
+    depends_on:
+      mysql-apigateway:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      nginx:
+        condition: service_started
+    networks:
+      - f4_network
+  msmedia:
+    image: tuongtran1345/msmedia
+    environment:
+      - JHIPSTER_APP_NAME=MsMediaApp
+      - SPRING_PROFILES_ACTIVE=dev,api-docs
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_CLOUD_CONSUL_PORT=8500
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-msmedia:3306/msmedia?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true
+      - SPRING_LIQUIBASE_URL=jdbc:mysql://mysql-msmedia:3306/msmedia?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true
+      - JHIPSTER_CACHE_REDIS_SERVER=redis://redis:6379
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_ISSUER_URI=https://keycloak.appf4.io.vn/realms/jhipster
+      - JHIPSTER_SECURITY_OAUTH2_AUTH_SERVER_URL=https://keycloak.appf4.io.vn
+    depends_on:
+      mysql-msmedia:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      consul:
+        condition: service_started
+      nginx:
+        condition: service_started
+    networks:
+      - f4_network
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins-lite
+    user: "root" # Run as Jenkins user to match folder permissions
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+      - /root/docker-compose/docker-compose:/var/jenkins_home/project # Corrected mount
+      - /var/run/docker.sock:/var/run/docker.sock # Allow Jenkins to control Docker
+      - /usr/bin/docker:/usr/bin/docker # Provides the Docker CLI
+    environment:
+      - JAVA_OPTS=-Xms512m -Xmx1024m
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+    networks:
+      - f4_network
+volumes:
+  jenkins_home:
