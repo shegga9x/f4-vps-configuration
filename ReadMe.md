@@ -40,3 +40,6 @@ echo f4security > kafka/ssl/truststore_creds
 mv kafka.server.keystore.jks kafka/ssl/
 mv kafka.server.truststore.jks kafka/ssl/
 rm kafka-server-cert
+
+
+ssh -R 8085:localhost:8084 -R 8083:localhost:8081 root@68.183.189.152
