@@ -1,12 +1,15 @@
-docker run --rm -p 80:80 -p 443:443 \
-  -v $(pwd)/nginx/letsencrypt:/etc/letsencrypt \
-  certbot/certbot certonly --standalone \
-  -d appf4.io.vn -d kafdrop.appf4.io.vn -d consul.appf4.io.vn -d keycloak.appf4.io.vn \
-  -d kafka.appf4.io.vn \
-  -d mysql.appf4.io.vn \
-  -d redis.appf4.io.vn \
-  -d redisinsiight.appf4.io.vn \
-  --email shegga9x@gmail.com --agree-tos --non-interactive --no-eff-email
+  minio:
+    image: minio/minio
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - ./minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - f4_network
+
 
 
 mkdir -p kafka/ssl
