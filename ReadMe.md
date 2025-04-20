@@ -5,6 +5,7 @@ docker run --rm -p 80:80 -p 443:443 \
   -d kafka.appf4.io.vn \
   -d mysql.appf4.io.vn \
   -d redis.appf4.io.vn \
+  -d redisinsiight.appf4.io.vn \
   --email shegga9x@gmail.com --agree-tos --non-interactive --no-eff-email
 
 
