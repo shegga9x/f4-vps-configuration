@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "../docker-compose"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}

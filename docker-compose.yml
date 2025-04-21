@@ -21,7 +21,8 @@ services:
       - f4_network
   redis:
     image: redis:7.4.2 # Same version as prod
-
+    ports:
+      - "6379:6379"
     command: redis-server --requirepass Hiendepzaikhoaitonhatxom
     networks:
       - f4_network
@@ -175,3 +176,24 @@ services:
 
     networks:
       - f4_network
+
+  # n8n:
+  #   image: n8nio/n8n:latest
+  #   container_name: n8n
+  #   restart: always
+  #   ports:
+  #     - "5678:5678"
+  #   environment:
+  #     # - N8N_ENCRYPTION_KEY=your-secure-encryption-key
+  #     - WEBHOOK_URL=https://n8n.appf4.io.vn/
+  #     - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+  #     - N8N_RUNNERS_ENABLED=true
+  #     # - N8N_EMAIL_MODE=smtp
+  #     # - N8N_SMTP_HOST=smtp.example.com
+  #     # - N8N_SMTP_PORT=587
+  #     # - N8N_SMTP_USER=your-smtp-user
+  #     # - N8N_SMTP_PASS=your-smtp-password
+  #   volumes:
+  #     - ~/.n8n:/home/node/.n8n
+  #   networks:
+  #     - f4_network
