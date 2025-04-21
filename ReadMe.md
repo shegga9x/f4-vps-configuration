@@ -1,14 +1,4 @@
-  minio:
-    image: minio/minio
-    container_name: minio
-    environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
-    volumes:
-      - ./minio_data:/data
-    command: server /data --console-address ":9001"
-    networks:
-      - f4_network
+docker run --rm -p 80:80 -p 443:443 -v $(pwd)/nginx/letsencrypt:/etc/letsencrypt certbot/certbot certonly --standalone --cert-name appf4.io.vn -d keycloak.appf4.io.vn -d kafdrop.appf4.io.vn -d kafka.appf4.io.vn -d redis.appf4.io.vn -d consul.appf4.io.vn -d redisinsiight.appf4.io.vn -d minio.appf4.io.vn -d n8n.appf4.io.vn --email shegga9x@gmail.com --agree-tos --non-interactive
 
 
 
@@ -34,7 +24,28 @@ keytool -import -alias kafka-server \
   -keystore kafka.server.truststore.jks \
   -storepass f4security \
   -noprompt
+root@bunledin:~/f4-vps-configuration# docker run --rm -p 80:80 -p 443:443 \
+  -v $(pwd)/nginx/letsencrypt:/etc/letsencrypt \
+  certbot/certbot certonly --standalone \
+  -d keycloak.appf4.io.vn \
+  -d kafdrop.appf4.io.vn \
+  -d kafka.appf4.io.vn \
+  -d redis.appf4.io.vn \
+  -d consul.appf4.io.vn \
+  -d redisinsiight.appf4.io.vn \  
+  -d minio.appf4.io.vn \
+  -d n8n.appf4.io.vn \
+  --email shegga9x@gmail.com --agree-tos --non-interactive --no-eff-email
 
+usage: 
+  certbot [SUBCOMMAND] [options] [-d DOMAIN] [-d DOMAIN] ...
+
+Certbot can obtain and install HTTPS/TLS/SSL certificates.  By default,
+it will attempt to use a webserver both for obtaining and installing the
+certificate. 
+certbot: error: unrecognized arguments:  
+-d: command not found
+root@bunledin:~/f4-vps-configuration# ^C
 # Create credentials files
 echo f4security > kafka/ssl/keystore_creds
 echo f4security > kafka/ssl/key_creds
