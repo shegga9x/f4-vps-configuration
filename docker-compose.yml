@@ -1,5 +1,5 @@
 # name: dev
-version: '3.8'  # Use an appropriate version like 3.8 or 3
+version: '3.8' # Use an appropriate version like 3.8 or 3
 networks:
   f4_network:
     driver: bridge
@@ -108,7 +108,9 @@ services:
   kafka:
     image: confluentinc/cp-kafka:7.6.0
     container_name: kafka
-
+    ports:
+      - "29092:29092"
+      - "9092:9092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -172,28 +174,28 @@ services:
       - ./nginx/log:/var/log/nginx
       - ./lua/validate_token.lua:/etc/nginx/validate_token.lua # Mount the Lua script
       - ./lua:/etc/nginx/lua
-    command: ["/usr/local/openresty/bin/openresty", "-g", "daemon off;"]
+    command: [ "/usr/local/openresty/bin/openresty", "-g", "daemon off;" ]
 
     networks:
       - f4_network
 
-  # n8n:
-  #   image: n8nio/n8n:latest
-  #   container_name: n8n
-  #   restart: always
-  #   ports:
-  #     - "5678:5678"
-  #   environment:
-  #     # - N8N_ENCRYPTION_KEY=your-secure-encryption-key
-  #     - WEBHOOK_URL=https://n8n.appf4.io.vn/
-  #     - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
-  #     - N8N_RUNNERS_ENABLED=true
-  #     # - N8N_EMAIL_MODE=smtp
-  #     # - N8N_SMTP_HOST=smtp.example.com
-  #     # - N8N_SMTP_PORT=587
-  #     # - N8N_SMTP_USER=your-smtp-user
-  #     # - N8N_SMTP_PASS=your-smtp-password
-  #   volumes:
-  #     - ~/.n8n:/home/node/.n8n
-  #   networks:
-  #     - f4_network
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      # - N8N_ENCRYPTION_KEY=your-secure-encryption-key
+      - WEBHOOK_URL=https://n8n.appf4.io.vn/
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_RUNNERS_ENABLED=true
+      # - N8N_EMAIL_MODE=smtp
+      # - N8N_SMTP_HOST=smtp.example.com
+      # - N8N_SMTP_PORT=587
+      # - N8N_SMTP_USER=your-smtp-user
+      # - N8N_SMTP_PASS=your-smtp-password
+    volumes:
+      - ~/.n8n:/home/node/.n8n
+    networks:
+      - f4_network
