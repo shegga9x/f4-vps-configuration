@@ -140,7 +140,6 @@ services:
       - kafka
     networks:
       - f4_network
-
   minio:
     image: minio/minio
     container_name: minio
@@ -154,7 +153,6 @@ services:
     command: server /data --console-address ":9001"
     networks:
       - f4_network
-
   nginx:
     build: ./script/
     container_name: nginx
@@ -177,3 +175,57 @@ services:
 
     networks:
       - f4_network
+  elasticsearch:
+    image: elasticsearch:8.18.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=admin
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - bootstrap.memory_lock=true
+      - cluster.name=docker-cluster
+      - node.name=elasticsearch-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "9200:9200"
+    volumes:
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
+      - ./elasticsearch/logs:/usr/share/elasticsearch/logs
+      - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins
+    user: "1000:1000"
+    networks:
+      - f4_network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.12.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system_user
+      - ELASTICSEARCH_PASSWORD=kibana123
+      - xpack.security.enabled=true
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - f4_network
+
+  init-kibana-user:
+    image: curlimages/curl:latest
+    container_name: init-kibana-user
+    volumes:
+      - ./script:/scripts
+    entrypoint: [ "sh", "/scripts/create-kibana-user.sh" ]
+    depends_on:
+      - elasticsearch
+    networks:
+      - f4_network
+    restart: "no"
