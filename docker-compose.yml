@@ -123,23 +123,33 @@ services:
       KAFKA_SSL_TRUSTSTORE_LOCATION: /etc/kafka/secrets/kafka.truststore.jks
       KAFKA_SSL_TRUSTSTORE_PASSWORD: f4security
       KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
     volumes:
       - ./kafka/ssl:/etc/kafka/secrets
     depends_on:
       - zookeeper
     networks:
       - f4_network
-  kafdrop:
-    image: obsidiandynamics/kafdrop:latest
-    container_name: kafdrop
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
     environment:
-      KAFKA_BROKERCONNECT: kafka:29092
-      JVM_OPTS: "-Xms256M -Xmx512M"
-      SERVER_SERVLET_CONTEXTPATH: "/"
+      # cluster definition
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
+      # tell it to use plain SSL (no hostname verification)
+      # point to your mounted keystore/truststore
+      # optional JVM tuning
+      - JVM_OPTS=-Xms256M -Xmx512M
+    volumes:
+      - ./secrets:/etc/kafka/secrets:ro
     depends_on:
       - kafka
     networks:
       - f4_network
+
   minio:
     image: minio/minio
     container_name: minio
