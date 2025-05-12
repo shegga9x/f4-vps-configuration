@@ -33,7 +33,7 @@ echo "$(date) - API Gateway is UP! Adding to Nginx..."
 cat <<EOF > "$CONFIG_FILE"
 server {
     listen 443 ssl;
-    server_name appf4.io.vn;
+    server_name appf4s.io.vn;
 
     ssl_certificate /etc/letsencrypt/live/appf4.io.vn/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/appf4.io.vn/privkey.pem;
