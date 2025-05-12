@@ -2,7 +2,7 @@
 
 # Keycloak Configuration
 KEYCLOAK_REALM="jhipster"
-KEYCLOAK_URL="https://keycloak. appf4s.io.vn"
+KEYCLOAK_URL="https://keycloak.appf4s.io.vn"
 KEYCLOAK_TOKEN_URL="${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token"
 
 # Client ID

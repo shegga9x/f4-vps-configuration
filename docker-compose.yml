@@ -56,8 +56,8 @@ services:
       - "start-dev"
       - "--import-realm"
       - "--proxy=edge"
-      - "--hostname=https://keycloak. appf4s.io.vn"
-      - "--hostname-admin=https://keycloak. appf4s.io.vn"
+      - "--hostname=https://keycloak.appf4s.io.vn"
+      - "--hostname-admin=https://keycloak.appf4s.io.vn"
       - "--hostname-strict=true"
     volumes:
       - ./realm-config:/opt/keycloak/data/import
@@ -74,11 +74,11 @@ services:
       - KC_HEALTH_ENABLED=true
       - KC_HTTP_MANAGEMENT_PORT=9990
       - KC_PROXY=edge
-      - KC_HOSTNAME=keycloak. appf4s.io.vn
+      - KC_HOSTNAME=keycloak.appf4s.io.vn
       - KC_HOSTNAME_PORT=443
-      - KC_HOSTNAME_URL=https://keycloak. appf4s.io.vn
-      - KC_HOSTNAME_ADMIN_URL=https://keycloak. appf4s.io.vn
-      - KC_FRONTEND_URL=https://keycloak. appf4s.io.vn
+      - KC_HOSTNAME_URL=https://keycloak.appf4s.io.vn
+      - KC_HOSTNAME_ADMIN_URL=https://keycloak.appf4s.io.vn
+      - KC_FRONTEND_URL=https://keycloak.appf4s.io.vn
       - KC_HOSTNAME_STRICT=true
       - KC_HOSTNAME_STRICT_HTTPS=true
       - KC_HTTP_ENABLED=true
@@ -114,7 +114,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER:PLAINTEXT,EXTERNAL:SSL
-      KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka:29092,EXTERNAL:// appf4s.io.vn:9092
+      KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka:29092,EXTERNAL://appf4s.io.vn:9092
       KAFKA_LISTENERS: DOCKER://:29092,EXTERNAL://:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
       KAFKA_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka.keystore.jks
@@ -156,8 +156,8 @@ services:
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
-      MINIO_SERVER_URL: https://minio. appf4s.io.vn
-      MINIO_BROWSER_REDIRECT_URL: https://minio. appf4s.io.vn/ui
+      MINIO_SERVER_URL: https://minio.appf4s.io.vn
+      MINIO_BROWSER_REDIRECT_URL: https://minio.appf4s.io.vn/ui
     volumes:
       - ./minio_data:/data
     command: server /data --console-address ":9001"

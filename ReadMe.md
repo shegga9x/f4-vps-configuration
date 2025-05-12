@@ -1,4 +1,4 @@
-docker run --rm -p 80:80 -p 443:443 -v $(pwd)/nginx/letsencrypt:/etc/letsencrypt certbot/certbot certonly --standalone --cert-name appf4s.io.vn -d appf4s.io.vn -d keycloak. appf4s.io.vn -d kafdrop. appf4s.io.vn -d kafka. appf4s.io.vn -d redis. appf4s.io.vn -d consul. appf4s.io.vn -d redisinsiight. appf4s.io.vn -d minio. appf4s.io.vn -d n8n. appf4s.io.vn --email shegga9x@gmail.com --agree-tos --non-interactive
+docker run --rm -p 80:80 -p 443:443 -v $(pwd)/nginx/letsencrypt:/etc/letsencrypt certbot/certbot certonly --standalone --cert-nameappf4s.io.vn -dappf4s.io.vn -d keycloak.appf4s.io.vn -d kafdrop.appf4s.io.vn -d kafka.appf4s.io.vn -d redis.appf4s.io.vn -d consul.appf4s.io.vn -d redisinsiight.appf4s.io.vn -d minio.appf4s.io.vn -d n8n.appf4s.io.vn --email shegga9x@gmail.com --agree-tos --non-interactive
 
 
 
@@ -10,7 +10,7 @@ keytool -genkey -alias kafka-server \
   -keystore kafka.server.keystore.jks \
   -storepass f4security \
   -keypass f4security \
-  -dname "CN= appf4s.io.vn"
+  -dname "CN=appf4s.io.vn"
 
 # Export Certificate
 keytool -export -alias kafka-server \
@@ -27,16 +27,16 @@ keytool -import -alias kafka-server \
 docker run --rm -p 80:80 -p 443:443 \
   -v $(pwd)/nginx/letsencrypt:/etc/letsencrypt \
   certbot/certbot certonly --standalone \
-  -d appf4s.io.vn \
-  -d keycloak. appf4s.io.vn \
-  -d kafdrop. appf4s.io.vn \
-  -d kafka. appf4s.io.vn \
-  -d redis. appf4s.io.vn \
-  -d consul. appf4s.io.vn \
-  -d redisinsiight. appf4s.io.vn \
-  -d minio. appf4s.io.vn \
-  -d n8n. appf4s.io.vn \
-  -d searchui. appf4s.io.vn \
+  -dappf4s.io.vn \
+  -d keycloak.appf4s.io.vn \
+  -d kafdrop.appf4s.io.vn \
+  -d kafka.appf4s.io.vn \
+  -d redis.appf4s.io.vn \
+  -d consul.appf4s.io.vn \
+  -d redisinsiight.appf4s.io.vn \
+  -d minio.appf4s.io.vn \
+  -d n8n.appf4s.io.vn \
+  -d searchui.appf4s.io.vn \
   --email shegga9x@gmail.com --agree-tos --non-interactive --no-eff-email
 
 usage: 
