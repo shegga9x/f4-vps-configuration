@@ -35,8 +35,8 @@ server {
     listen 443 ssl;
     server_name appf4s.io.vn;
 
-    ssl_certificate /etc/letsencrypt/live/appf4.io.vn/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/appf4.io.vn/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/ appf4s.io.vn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/ appf4s.io.vn/privkey.pem;
 
     location / {
         proxy_pass http://apigateway:8080;
@@ -49,18 +49,18 @@ server {
     # 🔹 Kafdrop with Keycloak Authentication
 server {
     listen 443 ssl;
-    server_name kafdrop.appf4.io.vn;
+    server_name kafdrop. appf4s.io.vn;
 
-    ssl_certificate /etc/letsencrypt/live/appf4.io.vn/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/appf4.io.vn/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/ appf4s.io.vn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/ appf4s.io.vn/privkey.pem;
 
     resolver 8.8.8.8 ipv6=off;  # 🔹 Add this to fix the DNS issue
 
     location / {
         access_by_lua_block {
             local opts = {
-                redirect_uri = "https://kafdrop.appf4.io.vn/oauth2/callback",
-                discovery = "https://keycloak.appf4.io.vn/realms/jhipster/.well-known/openid-configuration",
+                redirect_uri = "https://kafdrop. appf4s.io.vn/oauth2/callback",
+                discovery = "https://keycloak. appf4s.io.vn/realms/jhipster/.well-known/openid-configuration",
                 client_id = "web_app",
                 client_secret = "",
                 scope = "openid email profile",
@@ -83,10 +83,10 @@ server {
     # 🔹 Consul with Keycloak Authentication
 server {
     listen 443 ssl;
-    server_name consul.appf4.io.vn;
+    server_name consul. appf4s.io.vn;
 
-    ssl_certificate /etc/letsencrypt/live/appf4.io.vn/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/appf4.io.vn/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/ appf4s.io.vn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/ appf4s.io.vn/privkey.pem;
 
     resolver 8.8.8.8 ipv6=off;
 
@@ -102,8 +102,8 @@ server {
     location / {
         access_by_lua_block {
             local opts = {
-                redirect_uri = "https://consul.appf4.io.vn/oauth2/callback",
-                discovery = "https://keycloak.appf4.io.vn/realms/jhipster/.well-known/openid-configuration",
+                redirect_uri = "https://consul. appf4s.io.vn/oauth2/callback",
+                discovery = "https://keycloak. appf4s.io.vn/realms/jhipster/.well-known/openid-configuration",
                 client_id = "web_app",
                 client_secret = "",
                 scope = "openid email profile",
@@ -127,18 +127,18 @@ server {
 
 server {
     listen 443 ssl;
-    server_name jenkins.appf4.io.vn;
+    server_name jenkins. appf4s.io.vn;
 
-    ssl_certificate /etc/letsencrypt/live/appf4.io.vn/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/appf4.io.vn/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/ appf4s.io.vn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/ appf4s.io.vn/privkey.pem;
 
     resolver 8.8.8.8 ipv6=off;  # Add this to fix the DNS issue
 
     location / {
         access_by_lua_block {
             local opts = {
-                redirect_uri = "https://jenkins.appf4.io.vn/oauth2/callback",
-                discovery = "https://keycloak.appf4.io.vn/realms/jhipster/.well-known/openid-configuration",
+                redirect_uri = "https://jenkins. appf4s.io.vn/oauth2/callback",
+                discovery = "https://keycloak. appf4s.io.vn/realms/jhipster/.well-known/openid-configuration",
                 client_id = "web_app",
                 client_secret = "",
                 scope = "openid email profile",
