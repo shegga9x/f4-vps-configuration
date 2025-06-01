@@ -2,3 +2,5 @@ jenkins_home/
 src/*
 minio_data/*
 elasticsearch/*
+nginx/log/
+nginx/letsencrypt/
