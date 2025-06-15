@@ -37,6 +37,7 @@ docker run --rm -p 80:80 -p 443:443 \
   -d minio.appf4.io.vn \
   -d n8n.appf4.io.vn \
   -d searchui.appf4.io.vn \
+  -d jenkins.appf4.io.vn \
   --email shegga9x@gmail.com --agree-tos --non-interactive --no-eff-email
 
 usage: 
@@ -60,3 +61,5 @@ rm kafka-server-cert
 
 
 ssh -R 8085:localhost:8084 -R 8083:localhost:8081 root@68.183.189.152
+
+docker exec -u root -it jenkins apt-get update && docker exec -u root -it jenkins apt-get install -y sshpass

@@ -253,3 +253,16 @@ services:
     networks:
       - f4_network
     restart: "no"
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks:
+      - f4_network
+
+volumes:
+  jenkins_home:

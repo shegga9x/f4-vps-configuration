@@ -4,3 +4,4 @@ minio_data/*
 elasticsearch/*
 nginx/log/
 nginx/letsencrypt/
+n8n
