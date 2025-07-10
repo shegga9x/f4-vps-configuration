@@ -1,8 +1,9 @@
 from sentence_transformers import SentenceTransformer, util
 import numpy as np
 import json
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.responses import JSONResponse
+from typing import List
 
 # Load courses from JSON file
 with open("./course.json", "r") as f:
@@ -63,6 +64,17 @@ app = FastAPI()
 def recommend(course_id: str, top_k: int = 5):
     recs = recommend_courses(course_id, top_k)
     return JSONResponse(content=recs)
+
+@app.post("/recommend/batch")
+def recommend_batch(course_ids: List[str] = Query(...), top_k: int = 5):
+    """
+    Recommend similar courses for a list of course ids.
+    Returns a dict mapping each input id to its recommendations.
+    """
+    result = {}
+    for cid in course_ids:
+        result[cid] = recommend_courses(cid, top_k)
+    return JSONResponse(content=result)
 
 # Example usage:
 if __name__ == "__main__":
