@@ -4,12 +4,13 @@ import json
 from fastapi import FastAPI, Query
 from fastapi.responses import JSONResponse
 from typing import List
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
 
 # Load courses from JSON file
 with open("./course.json", "r") as f:
     courses = json.load(f)
 
-# Convert course object to flat text
 def course_to_text(c):
     return (
         f"ID: {c.get('id')}. Title: {c.get('title')}. Slug: {c.get('slug')}. "
@@ -28,9 +29,11 @@ def course_to_text(c):
 
 texts = [course_to_text(c) for c in courses]
 
-# Load model
 model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 embeddings = model.encode(texts, convert_to_tensor=True)
+
+chat_tokenizer = AutoTokenizer.from_pretrained("HuggingFaceTB/SmolLM2-135M")
+chat_model = AutoModelForCausalLM.from_pretrained("HuggingFaceTB/SmolLM2-135M")
 
 def recommend_courses(course_id: str, top_k: int = 5):
     target_index = next((i for i, c in enumerate(courses) if c.get('id') == course_id), None)
@@ -77,7 +80,6 @@ def chat_response(user_query: str, top_k: int = 3):
             break
     return responses
 
-# FastAPI setup
 app = FastAPI()
 
 @app.get("/recommend")
@@ -93,12 +95,41 @@ def recommend_batch(course_ids: List[str] = Query(...), top_k: int = 5):
 @app.get("/chat")
 def chat(query: str, top_k: int = 3):
     """
-    Chat endpoint that returns courses most related to a user's natural-language question.
+    Chat endpoint using HuggingFaceTB/SmolLM2-135M for a normal chat response,
+    or course recommendations if model score > 7.
+    The score is computed from the highest recommended course.
     """
     recs = chat_response(query, top_k)
-    return JSONResponse(content=recs)
+    max_score = recs[0]["score"] if recs else 0.0
+
+    if max_score > 0.5:
+        return JSONResponse(content={"score": max_score, "courses": recs})
+    else:
+        inputs = chat_tokenizer(query, return_tensors="pt")
+        with torch.no_grad():
+            outputs = chat_model.generate(**inputs, max_new_tokens=128, do_sample=True)
+            response = chat_tokenizer.decode(outputs[0], skip_special_tokens=True)
+        return JSONResponse(content={"score": max_score, "response": response})
+
+
+
+
 
 # Debug usage (CLI)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("recommend_courses:app", host="0.0.0.0", port=8000, reload=True)
+
+# No code changes needed. Example curl commands for testing:
+
+# Normal chat (no score param)
+# curl -G --data-urlencode "query=hello, how are you?" http://localhost:8000/chat
+
+# Chat with score <= 7 (should return normal chat)
+# curl -G --data-urlencode "query=show me a course" --data-urlencode "score=5" http://localhost:8000/chat
+
+# Chat with score > 7 (should return course recommendations)
+# curl -G --data-urlencode "query=show me a course" --data-urlencode "score=8" http://localhost:8000/chat
+
+# Optionally, specify top_k
+# curl -G --data-urlencode "query=show me a course" --data-urlencode "score=8" --data-urlencode "top_k=2" http://localhost:8000/chat
