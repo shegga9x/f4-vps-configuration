@@ -9,6 +9,7 @@ from typing import List
 with open("./course.json", "r") as f:
     courses = json.load(f)
 
+# Convert course object to flat text
 def course_to_text(c):
     return (
         f"ID: {c.get('id')}. Title: {c.get('title')}. Slug: {c.get('slug')}. "
@@ -27,19 +28,16 @@ def course_to_text(c):
 
 texts = [course_to_text(c) for c in courses]
 
-# Load embedding model
-model = SentenceTransformer("nomic-ai/nomic-embed-text-v1", trust_remote_code=True)
+# Load model
+model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 embeddings = model.encode(texts, convert_to_tensor=True)
 
 def recommend_courses(course_id: str, top_k: int = 5):
-    # Find the index of the course with the given id
     target_index = next((i for i, c in enumerate(courses) if c.get('id') == course_id), None)
     if target_index is None:
-        print(f"Course with id '{course_id}' not found.")
         return []
     target_embedding = embeddings[target_index]
     cos_scores = util.pytorch_cos_sim(target_embedding, embeddings)[0]
-    # Sort by similarity (descending), skip self
     sorted_indices = np.argsort(-cos_scores)
     seen_titles = set()
     recommendations = []
@@ -58,6 +56,28 @@ def recommend_courses(course_id: str, top_k: int = 5):
             break
     return recommendations
 
+def chat_response(user_query: str, top_k: int = 3):
+    query_embedding = model.encode(user_query, convert_to_tensor=True)
+    cos_scores = util.pytorch_cos_sim(query_embedding, embeddings)[0]
+    sorted_indices = np.argsort(-cos_scores)
+    responses = []
+    seen = set()
+    for idx in sorted_indices:
+        course = courses[idx]
+        title = course["title"]
+        if title not in seen:
+            responses.append({
+                "id": course["id"],
+                "title": title,
+                "description": course["description"],
+                "score": float(cos_scores[idx])
+            })
+            seen.add(title)
+        if len(responses) >= top_k:
+            break
+    return responses
+
+# FastAPI setup
 app = FastAPI()
 
 @app.get("/recommend")
@@ -67,21 +87,18 @@ def recommend(course_id: str, top_k: int = 5):
 
 @app.post("/recommend/batch")
 def recommend_batch(course_ids: List[str] = Query(...), top_k: int = 5):
-    """
-    Recommend similar courses for a list of course ids.
-    Returns a dict mapping each input id to its recommendations.
-    """
-    result = {}
-    for cid in course_ids:
-        result[cid] = recommend_courses(cid, top_k)
+    result = {cid: recommend_courses(cid, top_k) for cid in course_ids}
     return JSONResponse(content=result)
 
-# Example usage:
+@app.get("/chat")
+def chat(query: str, top_k: int = 3):
+    """
+    Chat endpoint that returns courses most related to a user's natural-language question.
+    """
+    recs = chat_response(query, top_k)
+    return JSONResponse(content=recs)
+
+# Debug usage (CLI)
 if __name__ == "__main__":
     import uvicorn
-    course_id = "c1"  # Change this to any course id you want to recommend for
-    recs = recommend_courses(course_id)
-    print(f"\nCourses similar to: {next(c['title'] for c in courses if c['id'] == course_id)}\n")
-    for rec in recs:
-        print(f"{rec['title']} (Score: {rec['score']:.4f})")
-    # To run the API: uvicorn recommend_courses:app --reload
+    uvicorn.run("recommend_courses:app", host="0.0.0.0", port=8000, reload=True)
