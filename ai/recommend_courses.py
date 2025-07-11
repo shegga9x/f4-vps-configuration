@@ -99,6 +99,15 @@ def chat(query: str, top_k: int = 3):
     or course recommendations if model score > 7.
     The score is computed from the highest recommended course.
     """
+    query = (
+        query.replace("khoá học", "course")
+             .replace("khóa", "course")
+             .replace("khoa", "course")
+             .replace("khoa hoc", "course")
+             .replace("hoc", "course")
+             .replace("goi y", "course")
+             .replace("gợi ý", "course")
+    )
     recs = chat_response(query, top_k)
     max_score = recs[0]["score"] if recs else 0.0
 
